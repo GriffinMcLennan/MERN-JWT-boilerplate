@@ -34,6 +34,7 @@ router.post("/", async (req, res) => {
 
     res.cookie("jwt", token, { maxAge: 5 * 60 * 1000, httpOnly: true });
 
+
     return res.status(200).send();
 });
 
