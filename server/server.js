@@ -1,7 +1,7 @@
+require("dotenv").config();
 const express = require("express");
 const jwt = require("jsonwebtoken");
-var cookieParser = require("cookie-parser");
-require("dotenv").config();
+const cookieParser = require("cookie-parser");
 const app = express();
 const mongoose = require("mongoose");
 const User = require("./models/user"); //remove this
