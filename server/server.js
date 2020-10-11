@@ -8,6 +8,7 @@ const User = require("./models/user"); //remove this
 const port = 5000;
 const mongoURL = `mongodb+srv://${process.env.USER}:${process.env.PASSWORD}@mern-jwt.6gmv0.mongodb.net/MERN-JWT?retryWrites=true&w=majority`;
 const registerRoute = require("./routes/register");
+const loginRoute = require("./routes/login");
 const dbName = "MERN-JWT";
 
 mongoose.connect(mongoURL, {
@@ -25,6 +26,8 @@ app.get("/", (req, res) => {
 });
 
 app.use("/register", registerRoute);
+
+app.use("/login", loginRoute);
 
 
 app.listen(port, () => {
