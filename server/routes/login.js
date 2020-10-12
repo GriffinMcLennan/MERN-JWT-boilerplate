@@ -1,10 +1,10 @@
-require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
 const User = require("./../models/user");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const fs = require("fs");
+const user = require("./../models/user");
 let router = express.Router();
 
 const privateKey = fs.readFileSync(__dirname + "/privateKey.key", "utf8");
@@ -12,13 +12,14 @@ const privateKey = fs.readFileSync(__dirname + "/privateKey.key", "utf8");
 router.post("/", async (req, res) => {
     const { username, password } = req.body;
 
-    let user = await User.find({ username: username });
+    let users = await User.find({ username: username });
+    const userExists = users.length > 0;
 
-    if (!user) {
+    if (!userExists) {
         return res.status(401).send("Error: User not found");
     }
 
-    user = user[0];
+    const user = users[0];
 
     const match = await bcrypt.compare(password, user.password);
 
@@ -26,13 +27,21 @@ router.post("/", async (req, res) => {
         return res.status(401).send("Error: Password doesn't match");
     }
 
-    const token = await jwt.sign({ uuid: user._id }, privateKey, { algorithm: "RS256" });
+    const accessToken = await jwt.sign({ uuid: user._id }, privateKey, { algorithm: "RS256", expiresIn: "2000" });
 
-    if (!token) {
+    if (!accessToken) {
         return res.status(400).send("Error: Failed to generate JWT");
     }
 
-    res.cookie("jwt", token, { maxAge: 5 * 60 * 1000, httpOnly: true });
+    const refreshToken = await jwt.sign({ uuid: user._id }, privateKey, { algorithm: "RS256", expiresIn: "15000" });
+
+    if (!refreshToken) {
+        return res.status(400).send("Error: Failed to generate JWT");
+    }
+
+    //30 * 60 * 1000
+    res.cookie("accessToken", accessToken, { maxAge: 30 * 60 * 1000, httpOnly: true, sameSite: "strict" });
+    res.cookie("refreshToken", refreshToken, { maxAge: 30 * 60 * 1000, httpOnly: true, sameSite: "strict" });
 
 
     return res.status(200).send();

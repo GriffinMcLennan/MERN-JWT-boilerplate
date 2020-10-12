@@ -6,25 +6,28 @@ let router = express.Router();
 
 const saltRounds = 10;
 
-router.post("/", (req, res) => {
+router.post("/", async (req, res) => {
     const { username, password } = req.body;
     var user;
 
-    bcrypt.hash(password, saltRounds, (err, hash) => {
-        if (err) {
-            console.log(err);
-            return res.status(400).send("Error hashing password");
-        }
+    const users = await User.find({ username: username });
+    const usernameTaken = users.length > 0;
 
-        user = new User({
-            _id: new mongoose.Types.ObjectId(),
-            username: username,
-            password: hash,
-        });
+    if (usernameTaken) {
+        return res.status(401).send("Error: Username taken");
+    }
 
-        user.save();
-        return res.status(200).send("Successful registration");
-    })
+    const hash = await bcrypt.hash(password, saltRounds);
+
+    user = new User({
+        _id: new mongoose.Types.ObjectId(),
+        username: username,
+        password: hash,
+    });
+
+    user.save();
+
+    return res.status(200).send("Successfully registered");
 })
 
 module.exports = router;

@@ -4,12 +4,40 @@ import axios from 'axios';
 
 function App() {
     const login = async () => {
-        let data = await axios.post("http://localhost:5000/login", {
+        let result = await axios.post("http://localhost:5000/login", {
             username: "Tim",
             password: "pim",
         }, { withCredentials: true });
 
-        console.log(data);
+        console.log(result);
+    }
+
+    const test = async () => {
+        let result = await axios.post("http://localhost:5000/test", {}, { withCredentials: true });
+
+        if (result.data.result === "jwt expired") {
+            let refreshData = await generateRefreshToken();
+
+            if (refreshData.data.result === "Success") {
+                console.log("Successfully updated accesss token & refresh token");
+            }
+            else {
+                console.log("Failed to update access & refresh token");
+            }
+        }
+    }
+
+    const generateRefreshToken = async () => {
+        let data = await axios.post("http://localhost:5000/refresh", {}, { withCredentials: true });
+
+        return data;
+    }
+
+    const register = async () => {
+        axios.post("http://localhost:5000/register", {
+            username: "Tim",
+            password: "pim",
+        }, { withCredentials: true });
     }
 
     return (
@@ -17,6 +45,8 @@ function App() {
             <h1>Welcome</h1>
 
             <button onClick={() => login()}>Sign in</button>
+            <button onClick={() => test()}>Test Cookies</button>
+            <button onClick={() => register()}>Register</button>
         </div>
     );
 }
