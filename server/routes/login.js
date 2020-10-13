@@ -11,6 +11,7 @@ const privateKey = fs.readFileSync(__dirname + "/privateKey.key", "utf8");
 
 router.post("/", async (req, res) => {
     const { username, password } = req.body;
+    //add try catch to this.
 
     let users = await User.find({ username: username });
     const userExists = users.length > 0;
@@ -28,16 +29,8 @@ router.post("/", async (req, res) => {
     }
 
     const accessToken = await jwt.sign({ uuid: user._id }, privateKey, { algorithm: "RS256", expiresIn: "2000" });
-
-    if (!accessToken) {
-        return res.status(400).send("Error: Failed to generate JWT");
-    }
-
     const refreshToken = await jwt.sign({ uuid: user._id }, privateKey, { algorithm: "RS256", expiresIn: "15000" });
 
-    if (!refreshToken) {
-        return res.status(400).send("Error: Failed to generate JWT");
-    }
 
     //30 * 60 * 1000
     res.cookie("accessToken", accessToken, { maxAge: 30 * 60 * 1000, httpOnly: true, sameSite: "strict" });

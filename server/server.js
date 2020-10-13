@@ -10,7 +10,6 @@ const mongoURL = `mongodb+srv://${process.env.USER}:${process.env.PASSWORD}@mern
 const registerRoute = require("./routes/register");
 const loginRoute = require("./routes/login");
 const auth = require("./middleware/authenticate");
-const checkRefresh = require("./routes/checkRefreshToken");
 const dbName = "MERN-JWT";
 
 mongoose.connect(mongoURL, {
@@ -44,12 +43,15 @@ app.use("/register", registerRoute, loginRoute);
 
 app.use("/login", loginRoute);
 
-app.post("/test", auth, (req, res) => {
+app.post("/secret", auth, (req, res) => {
     //console.log(req._id); Have the users ID now to access their information from the database.
-    res.status(200).send({ result: "Success" });
+    res.status(200).send({ uuid: req._id });
 });
 
-app.use("/refresh", checkRefresh);
+app.use((err, req, res, next) => {
+    res.status(401).send();
+    console.log("Error:", err.message);
+})
 
 app.listen(port, () => {
     console.log(`Listening on port ${port}`);

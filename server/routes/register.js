@@ -8,24 +8,29 @@ const saltRounds = 10;
 
 router.post("/", async (req, res) => {
     const { username, password } = req.body;
-    var user;
 
-    const users = await User.find({ username: username });
-    const usernameTaken = users.length > 0;
+    try {
+        const users = await User.find({ username: username });
+        const usernameTaken = users.length > 0;
 
-    if (usernameTaken) {
-        return res.status(401).send("Error: Username taken");
+        if (usernameTaken) {
+            return res.status(401).send("Error: Username taken");
+        }
+
+        const hash = await bcrypt.hash(password, saltRounds);
+
+        const user = new User({
+            _id: new mongoose.Types.ObjectId(),
+            username: username,
+            password: hash,
+        });
+
+        await user.save();
     }
-
-    const hash = await bcrypt.hash(password, saltRounds);
-
-    user = new User({
-        _id: new mongoose.Types.ObjectId(),
-        username: username,
-        password: hash,
-    });
-
-    user.save();
+    catch (e) {
+        console.log("Error:", e.message);
+        return res.status(400).send();
+    }
 
     return res.status(200).send("Successfully registered");
 })

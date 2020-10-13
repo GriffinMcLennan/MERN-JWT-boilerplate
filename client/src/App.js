@@ -13,6 +13,7 @@ function App() {
     }
 
     const test = async () => {
+        /*
         let result = await axios.post("http://localhost:5000/test", {}, { withCredentials: true });
 
         if (result.data.result === "jwt expired") {
@@ -25,6 +26,16 @@ function App() {
                 console.log("Failed to update access & refresh token");
             }
         }
+        */
+
+        try {
+            let data = await axios.post("http://localhost:5000/secret", {}, { withCredentials: true });
+
+            console.log(data);
+        }
+        catch (e) {
+            console.log(e.message);
+        }
     }
 
     const generateRefreshToken = async () => {
@@ -34,10 +45,17 @@ function App() {
     }
 
     const register = async () => {
-        axios.post("http://localhost:5000/register", {
-            username: "Tim",
-            password: "pim",
-        }, { withCredentials: true });
+        try {
+            let data = await axios.post("http://localhost:5000/register", {
+                username: "Tim",
+                password: "pim",
+            }, { withCredentials: true });
+
+            console.log(data);
+        }
+        catch (e) {
+            console.log(e.message);
+        }
     }
 
     return (
