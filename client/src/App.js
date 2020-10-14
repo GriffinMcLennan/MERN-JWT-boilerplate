@@ -7,6 +7,8 @@ import Button from '@material-ui/core/Button';
 
 function App() {
     const [loading, setLoading] = useState(true);
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
     const [isLoggedIn, setLoggedIn] = useState(false);
     const [userData, setUserData] = useState([]);
 
@@ -32,15 +34,19 @@ function App() {
         if (wasLoggedIn) {
             //try to query the homepage info
             queryUserData();
+        } else {
+            setLoading(false);
         }
     }, []);
 
     const login = async () => {
         try {
             const result = await axios.post("http://localhost:5000/login", {
-                username: "Tim",
-                password: "pim",
+                username: username,
+                password: password,
             }, { withCredentials: true });
+
+            console.log(result);
 
             const secretResult = await axios.post("http://localhost:5000/secret", {}, { withCredentials: true });
             const secretData = secretResult.data;
@@ -54,14 +60,21 @@ function App() {
         }
     }
 
+    const logout = () => {
+        Cookies.remove("isLoggedIn");
+        setLoggedIn(false);
+    }
+
     const register = async () => {
         try {
-            let data = await axios.post("http://localhost:5000/register", {
-                username: "Tim",
-                password: "pim",
+            let result = await axios.post("http://localhost:5000/register", {
+                username: username,
+                password: password,
             }, { withCredentials: true });
 
-            console.log(data);
+            const uuid = result.data.uuid;
+            setUserData(uuid);
+            setLoggedIn(true);
         }
         catch (e) {
             console.log(e.message);
@@ -78,17 +91,29 @@ function App() {
                             {
                                 !isLoggedIn ? (
                                     <div className="app__login">
-                                        <TextField placeholder="Username" autoComplete="off" />
-                                        <TextField placeholder="Password" autoComplete="off" style={{ marginTop: "15px" }} />
+                                        <TextField
+                                            placeholder="Username"
+                                            autoComplete="off"
+                                            onChange={(e) => setUsername(e.target.value)}
+                                        />
+
+                                        <TextField
+                                            placeholder="Password"
+                                            type="password"
+                                            autoComplete="off"
+                                            onChange={(e) => setPassword(e.target.value)}
+                                            style={{ marginTop: "15px" }}
+                                        />
 
                                         <div className="app__login__buttons">
-                                            <Button variant="contained" color="primary" onClick={() => login()}>Login</Button>
-                                            <Button variant="contained" color="secondary" style={{ marginLeft: "10px" }}>Register</Button>
+                                            <Button variant="contained" color="primary" onClick={login}>Login</Button>
+                                            <Button variant="contained" color="secondary" onClick={register} style={{ marginLeft: "10px" }}>Register</Button>
                                         </div>
                                     </div>
                                 ) : (
                                         <div className="app__userdata">
                                             <h1>uuid:{userData}</h1>
+                                            <Button variant="contained" color="primary" onClick={logout}>Logout</Button>
                                         </div>
                                     )
                             }

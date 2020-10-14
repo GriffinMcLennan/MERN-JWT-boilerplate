@@ -6,7 +6,7 @@ let router = express.Router();
 
 const saltRounds = 10;
 
-router.post("/", async (req, res) => {
+router.post("/", async (req, res, next) => {
     const { username, password } = req.body;
 
     try {
@@ -26,6 +26,8 @@ router.post("/", async (req, res) => {
         });
 
         await user.save();
+
+        next();
     }
     catch (e) {
         console.log("Error:", e.message);
