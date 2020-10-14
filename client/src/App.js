@@ -1,18 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.css';
 import axios from 'axios';
+import Cookies from 'js-cookie';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 
 function App() {
     const [isLoggedIn, setLoggedIn] = useState(false);
 
+    useEffect(() => {
+        Cookies.set("TestCookie", 30);
+    }, []);
+
     const login = async () => {
         try {
             let result = await axios.post("http://localhost:5000/login", {
                 username: "Tim",
                 password: "pim",
-                //password: "tester",
             }, { withCredentials: true });
 
             console.log(result);
