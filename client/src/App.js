@@ -4,30 +4,21 @@ import axios from 'axios';
 
 function App() {
     const login = async () => {
-        let result = await axios.post("http://localhost:5000/login", {
-            username: "Tim",
-            password: "pim",
-        }, { withCredentials: true });
+        try {
+            let result = await axios.post("http://localhost:5000/login", {
+                username: "Tim",
+                password: "pim",
+                //password: "tester",
+            }, { withCredentials: true });
 
-        console.log(result);
+            console.log(result);
+        }
+        catch (err) {
+            console.log(err.response);
+        }
     }
 
     const test = async () => {
-        /*
-        let result = await axios.post("http://localhost:5000/test", {}, { withCredentials: true });
-
-        if (result.data.result === "jwt expired") {
-            let refreshData = await generateRefreshToken();
-
-            if (refreshData.data.result === "Success") {
-                console.log("Successfully updated accesss token & refresh token");
-            }
-            else {
-                console.log("Failed to update access & refresh token");
-            }
-        }
-        */
-
         try {
             let data = await axios.post("http://localhost:5000/secret", {}, { withCredentials: true });
 
@@ -36,12 +27,6 @@ function App() {
         catch (e) {
             console.log(e.message);
         }
-    }
-
-    const generateRefreshToken = async () => {
-        let data = await axios.post("http://localhost:5000/refresh", {}, { withCredentials: true });
-
-        return data;
     }
 
     const register = async () => {

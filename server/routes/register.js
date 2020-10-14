@@ -31,8 +31,6 @@ router.post("/", async (req, res) => {
         console.log("Error:", e.message);
         return res.status(400).send();
     }
-
-    return res.status(200).send("Successfully registered");
 })
 
 module.exports = router;
