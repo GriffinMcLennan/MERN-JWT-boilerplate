@@ -11,7 +11,7 @@ const auth = async (req, res, next) => {
         req._id = payload.uuid;
     }
     catch (err1) {
-        //can try to use refresh token here
+        //Try to use refresh token
         try {
             const refreshPayload = await jwt.verify(refreshToken, publicKey, { algorithm: "RS256" });
             req._id = refreshPayload.uuid;
