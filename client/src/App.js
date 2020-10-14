@@ -6,34 +6,51 @@ import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 
 function App() {
+    const [loading, setLoading] = useState(true);
     const [isLoggedIn, setLoggedIn] = useState(false);
+    const [userData, setUserData] = useState([]);
 
     useEffect(() => {
-        Cookies.set("TestCookie", 30);
+        const queryUserData = async () => {
+            try {
+                const secretResult = await axios.post("http://localhost:5000/secret", {}, { withCredentials: true });
+                const secretData = secretResult.data;
+
+                setUserData(secretData.uuid);
+                setLoggedIn(true);
+            }
+            catch (err) {
+                Cookies.remove("isLoggedIn");
+                console.log(err.response);
+            }
+
+            setLoading(false);
+        };
+
+        const wasLoggedIn = Cookies.get("isLoggedIn");
+
+        if (wasLoggedIn) {
+            //try to query the homepage info
+            queryUserData();
+        }
     }, []);
 
     const login = async () => {
         try {
-            let result = await axios.post("http://localhost:5000/login", {
+            const result = await axios.post("http://localhost:5000/login", {
                 username: "Tim",
                 password: "pim",
             }, { withCredentials: true });
 
-            console.log(result);
+            const secretResult = await axios.post("http://localhost:5000/secret", {}, { withCredentials: true });
+            const secretData = secretResult.data;
+
+            setUserData(secretData.uuid);
+            setLoggedIn(true);
+
         }
         catch (err) {
             console.log(err.response);
-        }
-    }
-
-    const test = async () => {
-        try {
-            let data = await axios.post("http://localhost:5000/secret", {}, { withCredentials: true });
-
-            console.log(data);
-        }
-        catch (e) {
-            console.log(e.message);
         }
     }
 
@@ -54,18 +71,28 @@ function App() {
     return (
         <div className="app">
             {
-                !isLoggedIn ? (
-                    <div className="app__login">
-                        <TextField id="standard-basic" placeholder="Username" autoComplete="off" />
-                        <TextField id="standard-basic" placeholder="Password" autoComplete="off" style={{ marginTop: "15px" }} />
-
-                        <div className="app__login__buttons">
-                            <Button variant="contained" color="primary">Login</Button>
-                            <Button variant="contained" color="secondary" style={{ marginLeft: "10px" }}>Register</Button>
-                        </div>
-                    </div>
+                loading ? (
+                    <></>
                 ) : (
-                        <></>
+                        <>
+                            {
+                                !isLoggedIn ? (
+                                    <div className="app__login">
+                                        <TextField placeholder="Username" autoComplete="off" />
+                                        <TextField placeholder="Password" autoComplete="off" style={{ marginTop: "15px" }} />
+
+                                        <div className="app__login__buttons">
+                                            <Button variant="contained" color="primary" onClick={() => login()}>Login</Button>
+                                            <Button variant="contained" color="secondary" style={{ marginLeft: "10px" }}>Register</Button>
+                                        </div>
+                                    </div>
+                                ) : (
+                                        <div className="app__userdata">
+                                            <h1>uuid:{userData}</h1>
+                                        </div>
+                                    )
+                            }
+                        </>
                     )
             }
 

@@ -30,9 +30,9 @@ router.post("/", async (req, res) => {
 
         res.cookie("accessToken", accessToken, { maxAge: 30 * 60 * 1000, httpOnly: true, sameSite: "strict" });
         res.cookie("refreshToken", refreshToken, { maxAge: 30 * 60 * 1000, httpOnly: true, sameSite: "strict" });
+        res.cookie("isLoggedIn", true);
 
-
-        return res.status(200).send("Successfully logged in");
+        return res.status(200).send({ msg: "Successfully logged in", uuid: user._id });
     }
     catch (err) {
         console.log("Error:", err.message);

@@ -47,7 +47,7 @@ app.post("/secret", auth, (req, res) => {
 });
 
 app.use((err, req, res, next) => {
-    res.status(401).send();
+    res.status(401).send(err.message);
     console.log("Error:", err.message);
 });
 

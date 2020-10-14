@@ -9,12 +9,14 @@ const auth = async (req, res, next) => {
     try {
         const payload = jwt.verify(accessToken, publicKey, { algorithm: "RS256" });
         req._id = payload.uuid;
+        res._id = payload.uuid;
     }
     catch (err1) {
         //Try to use refresh token
         try {
             const refreshPayload = await jwt.verify(refreshToken, publicKey, { algorithm: "RS256" });
             req._id = refreshPayload.uuid;
+            res._id = refreshPayload.uuid;
 
             //assign new cookies
             const newAccessToken = await jwt.sign({ uuid: req._id }, privateKey, { algorithm: "RS256", expiresIn: "2000" });
