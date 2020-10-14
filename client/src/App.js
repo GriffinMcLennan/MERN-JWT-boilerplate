@@ -2,6 +2,7 @@ import React from 'react';
 import './App.css';
 import axios from 'axios';
 import TextField from '@material-ui/core/TextField';
+import Button from '@material-ui/core/Button';
 
 function App() {
     const login = async () => {
@@ -46,8 +47,15 @@ function App() {
 
     return (
         <div className="app">
-            <TextField id="standard-basic" placeholder="Username" />
-            <TextField id="standard-basic" placeholder="Password" />
+            <div className="app__login">
+                <TextField id="standard-basic" placeholder="Username" autoComplete="off" />
+                <TextField id="standard-basic" placeholder="Password" autoComplete="off" style={{ marginTop: "15px" }} />
+
+                <div className="app__login__buttons">
+                    <Button variant="contained" color="primary">Login</Button>
+                    <Button variant="contained" color="secondary" style={{ marginLeft: "10px" }}>Register</Button>
+                </div>
+            </div>
         </div>
     );
 }
