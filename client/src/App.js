@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './App.css';
 import axios from 'axios';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 
 function App() {
+    const [isLoggedIn, setLoggedIn] = useState(false);
+
     const login = async () => {
         try {
             let result = await axios.post("http://localhost:5000/login", {
@@ -47,15 +49,22 @@ function App() {
 
     return (
         <div className="app">
-            <div className="app__login">
-                <TextField id="standard-basic" placeholder="Username" autoComplete="off" />
-                <TextField id="standard-basic" placeholder="Password" autoComplete="off" style={{ marginTop: "15px" }} />
+            {
+                !isLoggedIn ? (
+                    <div className="app__login">
+                        <TextField id="standard-basic" placeholder="Username" autoComplete="off" />
+                        <TextField id="standard-basic" placeholder="Password" autoComplete="off" style={{ marginTop: "15px" }} />
 
-                <div className="app__login__buttons">
-                    <Button variant="contained" color="primary">Login</Button>
-                    <Button variant="contained" color="secondary" style={{ marginLeft: "10px" }}>Register</Button>
-                </div>
-            </div>
+                        <div className="app__login__buttons">
+                            <Button variant="contained" color="primary">Login</Button>
+                            <Button variant="contained" color="secondary" style={{ marginLeft: "10px" }}>Register</Button>
+                        </div>
+                    </div>
+                ) : (
+                        <></>
+                    )
+            }
+
         </div>
     );
 }
