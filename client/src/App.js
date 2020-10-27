@@ -40,7 +40,9 @@ function App() {
         }
     }, []);
 
-    const login = async () => {
+    const login = async (e) => {
+        e.preventDefault();
+
         try {
             const result = await axios.post("http://localhost:5000/login", {
                 username: username,
@@ -58,7 +60,6 @@ function App() {
 
         }
         catch (err) {
-            console.log(err.response);
             setErrorMsg(err.response.data);
         }
     }
@@ -80,7 +81,6 @@ function App() {
             setLoggedIn(true);
         }
         catch (err) {
-            console.log(err.response);
             setErrorMsg(err.response.data);
         }
     }
@@ -94,7 +94,7 @@ function App() {
                         <>
                             {
                                 !isLoggedIn ? (
-                                    <div className="app__login">
+                                    <form className="app__login">
                                         <TextField
                                             placeholder="Username"
                                             autoComplete="off"
@@ -116,10 +116,10 @@ function App() {
                                         }
 
                                         <div className="app__login__buttons">
-                                            <Button variant="contained" color="primary" onClick={login}>Login</Button>
+                                            <Button type="submit" variant="contained" color="primary" onClick={(e) => login(e)} onSubmit={(e) => login(e)}>Login</Button>
                                             <Button variant="contained" color="secondary" onClick={register} style={{ marginLeft: "10px" }}>Register</Button>
                                         </div>
-                                    </div>
+                                    </form>
                                 ) : (
                                         <div className="app__userdata">
                                             <h1>uuid:{userData}</h1>
