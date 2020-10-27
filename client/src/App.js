@@ -45,7 +45,7 @@ function App() {
 
         try {
             const result = await axios.post("http://localhost:5000/login", {
-                username: username,
+                username: username.toLowerCase().trim(),
                 password: password,
             }, { withCredentials: true });
 
@@ -72,7 +72,7 @@ function App() {
     const register = async () => {
         try {
             let result = await axios.post("http://localhost:5000/register", {
-                username: username,
+                username: username.toLowerCase().trim(),
                 password: password,
             }, { withCredentials: true });
 
