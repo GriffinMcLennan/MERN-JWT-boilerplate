@@ -11,6 +11,7 @@ function App() {
     const [password, setPassword] = useState("");
     const [isLoggedIn, setLoggedIn] = useState(false);
     const [userData, setUserData] = useState([]);
+    const [errorMsg, setErrorMsg] = useState(null);
 
     useEffect(() => {
         const queryUserData = async () => {
@@ -53,10 +54,12 @@ function App() {
 
             setUserData(secretData.uuid);
             setLoggedIn(true);
+            setErrorMsg(null);
 
         }
         catch (err) {
             console.log(err.response);
+            setErrorMsg(err.response.data);
         }
     }
 
@@ -76,8 +79,9 @@ function App() {
             setUserData(uuid);
             setLoggedIn(true);
         }
-        catch (e) {
-            console.log(e.message);
+        catch (err) {
+            console.log(err.response);
+            setErrorMsg(err.response.data);
         }
     }
 
@@ -104,6 +108,12 @@ function App() {
                                             onChange={(e) => setPassword(e.target.value)}
                                             style={{ marginTop: "15px" }}
                                         />
+
+                                        {
+                                            errorMsg ? (
+                                                <h4>{errorMsg}</h4>
+                                            ) : <></>
+                                        }
 
                                         <div className="app__login__buttons">
                                             <Button variant="contained" color="primary" onClick={login}>Login</Button>

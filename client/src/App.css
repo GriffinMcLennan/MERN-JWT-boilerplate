@@ -12,3 +12,8 @@
 .app__login__buttons {
     margin-top: 20px;
 }
+
+.app__userdata {
+    display: grid;
+    align-items: center;
+}

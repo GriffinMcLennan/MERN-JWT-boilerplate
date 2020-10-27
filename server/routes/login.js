@@ -4,7 +4,6 @@ const User = require("./../models/user");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const fs = require("fs");
-const user = require("./../models/user");
 let router = express.Router();
 
 const privateKey = fs.readFileSync(__dirname + "/privateKey.key", "utf8");
