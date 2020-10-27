@@ -5,8 +5,6 @@
 
 This project is intended as a boilerplate for MERN projects that involve protected routes that require user authentication. The JWTs are stored in httpOnly cookies to prevent malicious javascript attacks. This also allows for users to retain their session and not have to log back in every time they refresh or re-revisit the webpage.
 
----
-
 ## Quickstart: 
 
 Create a .env file in the server folder. Place your MongoDB Atlas URL: 
@@ -32,8 +30,6 @@ Client: ```npm run start```
 Server: ```npm run dev``` 
 
 Visit the client at: http://localhost:3000
-
----
 
 ## Creating Protected Routes
 To create a new protected API route simply add the **auth** middleware to the route and then it will only successfully perform the query if the user has a valid JWT. 
