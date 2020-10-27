@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 const fs = require("fs");
-const privateKey = fs.readFileSync(__dirname + "/../routes/privateKey.key", "utf8");
-const publicKey = fs.readFileSync(__dirname + "/../routes/publicKey.key", "utf8");
+const privateKey = fs.readFileSync(__dirname + "/../keys/privateKey.key", "utf8");
+const publicKey = fs.readFileSync(__dirname + "/../keys/publicKey.key", "utf8");
 
 const auth = async (req, res, next) => {
     const { accessToken, refreshToken } = req.cookies;
@@ -19,8 +19,8 @@ const auth = async (req, res, next) => {
             res._id = refreshPayload.uuid;
 
             //assign new cookies
-            const newAccessToken = await jwt.sign({ uuid: req._id }, privateKey, { algorithm: "RS256", expiresIn: "2000" });
-            const newRefreshToken = await jwt.sign({ uuid: req._id }, privateKey, { algorithm: "RS256", expiresIn: "15000" });
+            const newAccessToken = await jwt.sign({ uuid: req._id }, privateKey, { algorithm: "RS256", expiresIn: "5m" });
+            const newRefreshToken = await jwt.sign({ uuid: req._id }, privateKey, { algorithm: "RS256", expiresIn: "15m" });
 
             res.cookie("accessToken", newAccessToken);
             res.cookie("refreshToken", newRefreshToken);

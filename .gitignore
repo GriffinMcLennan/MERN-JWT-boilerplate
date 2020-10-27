@@ -1,5 +1,5 @@
 /server/node_modules/
 /client/node_modules/
-/server/routes/*.key
 .env
 /server/httpsCerts/
+/server/keys/*.key

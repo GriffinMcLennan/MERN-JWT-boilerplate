@@ -6,7 +6,7 @@ const jwt = require("jsonwebtoken");
 const fs = require("fs");
 let router = express.Router();
 
-const privateKey = fs.readFileSync(__dirname + "/privateKey.key", "utf8");
+const privateKey = fs.readFileSync(__dirname + "/../keys/privateKey.key", "utf8");
 const FIVE_MINUTES = 5 * 60 * 1000;
 const FIFTEEN_MINUTES = 15 * 60 * 1000;
 
