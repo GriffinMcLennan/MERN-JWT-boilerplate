@@ -7,6 +7,9 @@ const fs = require("fs");
 let router = express.Router();
 
 const privateKey = fs.readFileSync(__dirname + "/privateKey.key", "utf8");
+const FIVE_MINUTES = 5 * 60 * 1000;
+const FIFTEEN_MINUTES = 15 * 60 * 1000;
+
 
 router.post("/", async (req, res) => {
     const { username, password } = req.body;
@@ -24,11 +27,11 @@ router.post("/", async (req, res) => {
             return res.status(401).send("Error: Password doesn't match");
         }
 
-        const accessToken = await jwt.sign({ uuid: user._id }, privateKey, { algorithm: "RS256", expiresIn: "2000" });
-        const refreshToken = await jwt.sign({ uuid: user._id }, privateKey, { algorithm: "RS256", expiresIn: "15000" });
+        const accessToken = await jwt.sign({ uuid: user._id }, privateKey, { algorithm: "RS256", expiresIn: "5m" });
+        const refreshToken = await jwt.sign({ uuid: user._id }, privateKey, { algorithm: "RS256", expiresIn: "15m" });
 
-        res.cookie("accessToken", accessToken, { maxAge: 30 * 60 * 1000, httpOnly: true, sameSite: "strict" });
-        res.cookie("refreshToken", refreshToken, { maxAge: 30 * 60 * 1000, httpOnly: true, sameSite: "strict" });
+        res.cookie("accessToken", accessToken, { maxAge: FIVE_MINUTES, httpOnly: true, sameSite: "strict" });
+        res.cookie("refreshToken", refreshToken, { maxAge: FIFTEEN_MINUTES, httpOnly: true, sameSite: "strict" });
         res.cookie("isLoggedIn", true);
 
         return res.status(200).send({ msg: "Successfully logged in", uuid: user._id });
